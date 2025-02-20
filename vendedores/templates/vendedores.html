@@ -1,0 +1,9 @@
+{% block contain %}
+<h1>Vendedores</h1>
+
+<ul>
+  {% for vendedor in vendedores %}
+  <li>{{vendedor.nombre}}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

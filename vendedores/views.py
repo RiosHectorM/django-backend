@@ -1,33 +1,35 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from .forms import VendedorForm
+from .models import Vendedores
 
 # Create your views here.
 
 
-def home(request):
-    return render(request, 'home.html')
+def vendedores(request):
+    vendedores = Vendedores.objects.all()
+    return render(request, 'vendedores.html', {'vendedores': vendedores})
 
 
-def signup(request):
+def create_vendedor(request):
     if request.method == 'GET':
-        return render(request, 'signup.html', {
-            'form': UserCreationForm
+        return render(request, 'create_vendedor.html', {
+            'form': VendedorForm
         })
     else:
-        if request.POST['password1'] == request.POST['password2']:
-            try:
-                user = User.objects.create_user(
-                    username=request.POST['username'], password=request.POST['password1'])
-                user.save()
-                return HttpResponse('Usuario creado')
-            except:
-                return render(request, 'signup.html', {
-                    'form': UserCreationForm,
-                    'error': 'Usuario ya existe'
-                })
-    return render(request, 'signup.html', {
-        'form': UserCreationForm,
-        'error': 'Contraseñas no coinciden'
-    })
+        try:
+            form = VendedorForm(request.POST)
+            new_vendedor = form.save(commit=False)
+            new_vendedor.user = request.user
+            new_vendedor.save()
+            return redirect('vendedores')
+        except ValueError:
+            return render(request, 'create_vendedor.html', {
+                'form': VendedorForm,
+                'error': 'Ingrese datos validos'
+            })
+
+
+def detail_vendedor(request, vendedor_id):
+    return render(request, 'create_vendedor.html')

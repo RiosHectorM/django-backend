@@ -1,0 +1,10 @@
+{% block contain %}
+<h1>Crear Vendedor</h1>
+
+{{error}}
+
+<form action="/vendedores/create/" method="POST">
+  {% csrf_token %} {{form}}
+  <button>Save</button>
+</form>
+{% endblock %}
